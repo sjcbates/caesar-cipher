@@ -177,11 +177,8 @@ else:
 		logging.info("Exiting Cipher - Invalid Mode or Key value.")
 
 	else:
-		print("Arguments detected, running the script in non-interactive mode.")	
-
 		message = sys.argv[3]
-	
 		logging.info("Started cipher in non-interactive mode.")
-
+		print("Arguments detected, running the script in non-interactive mode.")
 		print("Here is your new message:")
 		print(crypt_message(mode, key, message))
