@@ -135,7 +135,7 @@ def play():
 		key = get_key()
 
 		print("Here is your new message:")
-		print(cryptMessage(mode, key, message))
+		print(crypt_message(mode, key, message))
 	
 		start = play_again()
 
@@ -184,4 +184,4 @@ else:
 		logging.info("Started cipher in non-interactive mode.")
 
 		print("Here is your new message:")
-		print(cryptMessage(mode, key, message))
+		print(crypt_message(mode, key, message))
