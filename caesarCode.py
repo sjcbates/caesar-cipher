@@ -99,9 +99,7 @@ def cryptMessage(mode, key, message):
 	return translated_Message
 
 """The following play and play_again functions are used primarily for flow control while 
-being run in the interactive mode. This could have been achieved without the use of 
-functions, but the code looks way messier and is much harder to read and 
-understand."""
+being run in the interactive mode."""
 def play_again():
 	while True:
 		print("Do you want to enter another message to be ciphered? (y/n)")
