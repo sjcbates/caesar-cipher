@@ -71,10 +71,17 @@ def get_key():
 		key = change_key()
 		return key
 	elif choice == 2:
-		file = open("keyFile","r+")
-		key = int(file.readline().strip())
-		file.close()
-		return key
+		try:
+			file = open("keyFile")
+		except FileNotFoundError:
+			print("File doesn't exist.")
+			logging.info("Exiting cipher, key file not found.")
+			key = int(input("Enter new key value: "))
+		else:
+			key = int(file.readline().strip())
+			file.close()
+		finally:
+			return key
 	else:
 		print("Sorry, I didn't quite catch that.")
 		getKey()
