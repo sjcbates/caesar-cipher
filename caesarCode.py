@@ -166,7 +166,7 @@ elif arguments > 1 and arguments < 4 or arguments > 4:
 else:
 	try:
 		key = int(sys.argv[2])
-		if key < 1 or key > 26:
+		if key < 1 or key > max_key_size:
 			raise CipherKeyValueError
 		mode = sys.argv[1]
 		if mode != 'e' and mode != 'd':
