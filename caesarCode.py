@@ -7,10 +7,11 @@ selected method in the interactive form of this script. """
 import sys
 import logging 
 
-"""Set the max key size so that the cipher key doesn't exceed the number of letters in
-the alphabet."""
+"""Set the max key size so that the cipher key doesn't exceed the number of 
+letters in the alphabet."""
 max_key_size = 26
-""" Setting the variable arguments to contain the number of arguments passed to the script."""
+""" Setting the variable arguments to contain the number of arguments passed to 
+the script."""
 arguments = len(sys.argv)
 
 logging.basicConfig(filename='cipher.log', level=logging.INFO,
@@ -26,7 +27,7 @@ class CipherKeyValueError(Exception):
 
 """ This function, and any function starting with get, will only be run
 in the interactive form of this script. """
-def getMode():
+def get_mode():
 	while True:
 		print("Would you like to encrypt 'e' or decrypt 'd'?")
 		mode = input().lower()
@@ -36,7 +37,7 @@ def getMode():
 			print("Invalid input, please try again:")
 
 
-def getMessage():
+def get_message():
 	print("Enter the message to be encrypted/decrypted:")
 	return input()
 
@@ -61,7 +62,7 @@ def change_key():
 			else:
 				print("The key cannot exceed the max key size of %s" % (max_key_size))
 
-def getKey():
+def get_key():
 	key = 0 
 	print("Do you want to use a new key or use the old one from the key file?")
 	choice = int(input("1. New Key | 2. Old Key: "))	
@@ -80,15 +81,15 @@ def getKey():
 
 """This is where the actual encryption/decryption happens. If the mode is set to 'd',
 the key is simply reversed in order to perform the decryption. The for loop will
-iterate over each character in the messsage. If the character is a letter it will
+iterate over each character in the message. If the character is a letter it will
 assign the ord for that character to the variable num, which is then concatenated
-with the key. It will then shift the character based on wether or not it is upper
-or lower case, and then will concatenate the character to the translated_Message 
+with the key. It will then shift the character based on whether or not it is upper
+or lower case, and then will concatenate the character to the translated_message 
 variable. If the character is not a letter, it will simply concatenate that
-charcter to the translated_Message variable, preserving any spaces or special/
+character to the translated_message variable, preserving any spaces or special/
 non-alphanumeric characters. """
-def cryptMessage(mode, key, message):
-	translated_Message = " "
+def crypt_message(mode, key, message):
+	translated_message = " "
 	if mode == "d":
 		key = -key
 
@@ -108,10 +109,10 @@ def cryptMessage(mode, key, message):
 				elif num < ord("a"):
 					num += 26
 
-			translated_Message += chr(num)
+			translated_message += chr(num)
 		else:
-			translated_Message += character 
-	return translated_Message
+			translated_message += character
+	return translated_message
 
 """The following play and play_again functions are used primarily for flow control while 
 being run in the interactive mode."""
@@ -129,9 +130,9 @@ def play():
 	print("Do you want to enter a message to be ciphered? (y/n) -h for help: ")
 	start = input().lower()
 	while start == "y":
-		mode = getMode()
-		message = getMessage()
-		key = getKey()
+		mode = get_mode()
+		message = get_message()
+		key = get_key()
 
 		print("Here is your new message:")
 		print(cryptMessage(mode, key, message))
@@ -140,8 +141,7 @@ def play():
 
 	if start == "n":
 		print("Ok, closing the program...")
-	
-	if start != "y" and start != "n":
+	elif start != "y" and start != "n":
 		if start == "-h":
 			print("/.caesarCode.py {e|d} key(1-26) 'text'")
 		else:
