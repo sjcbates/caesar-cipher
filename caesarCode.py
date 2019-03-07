@@ -10,9 +10,19 @@ import logging
 """Set the max key size so that the cipher key doesn't exceed the number of letters in
 the alphabet."""
 max_key_size = 26
+""" Setting the variable arguments to contain the number of arguments passed to the script."""
+arguments = len(sys.argv)
 
 logging.basicConfig(filename='cipher.log', level=logging.INFO,
 			format='%(asctime)s:%(levelname)s:%(message)s')
+
+class CipherModeError(Exception):
+	"""Raised when the cipher mode is set to anything other than 'e' or 'd'. """
+	pass
+
+class CipherKeyValueError(Exception):
+	"""Raised when the cipher key is lower than 1 or higher than 26. """
+	pass
 
 """ This function, and any function starting with get, will only be run
 in the interactive form of this script. """
@@ -37,14 +47,19 @@ the getKey function. """
 def change_key():
 	key = 0
 	while True:
-		key = int(input("Enter the new key value: "))
-		if key >= 1 and key <= max_key_size:
-			file = open("keyFile", "w")
-			file.write(str(key))
-			file.close()
-			return key
+		try:
+			key = int(input("Enter the new key value: "))
+		except ValueError:
+			print("The key needs to be an integer.")
+			logging.info("Cipher exiting: Key Value Error when writing to key file.")
 		else:
-			print("The key cannot exceed the max key size of %s" % (max_key_size))
+			if key >= 1 and key <= max_key_size:
+				file = open("keyFile", "w")
+				file.write(str(key))
+				file.close()
+				return key
+			else:
+				print("The key cannot exceed the max key size of %s" % (max_key_size))
 
 def getKey():
 	key = 0 
@@ -55,7 +70,7 @@ def getKey():
 		key = change_key()
 		return key
 	elif choice == 2:
-		file = open("keyFile")
+		file = open("keyFile","r+")
 		key = int(file.readline().strip())
 		file.close()
 		return key
@@ -111,7 +126,7 @@ def play_again():
 
 
 def play():
-	print("Do you want to enter a message to be ciphered? (y/n)")
+	print("Do you want to enter a message to be ciphered? (y/n) -h for help: ")
 	start = input().lower()
 	while start == "y":
 		mode = getMode()
@@ -127,36 +142,46 @@ def play():
 		print("Ok, closing the program...")
 	
 	if start != "y" and start != "n":
-		print("Invalid input, let's try that again shall we...")
-		play()
+		if start == "-h":
+			print("/.caesarCode.py {e|d} key(1-26) 'text'")
+		else:
+			print("Invalid input, let's try that again shall we...")
+			play()
 
 """Here the program will check to see how many arguments were provided and will decide
 if it will be run interactively or non-interactively. If the user provides no arguments,
 the script will automatically be run interactively. If the proper amount of arguments 
 were supplied, it will bypass all of the get functions and perform the encryption/
 decryption process on the supplied message. """
-if len(sys.argv) < 4 or len(sys.argv) > 4:
-	if len(sys.argv) == 1:
-		play()
-		logging.info("Cipher started with no arguments, starting interactive mode.")
-	elif sys.argv[1] == "-h":
-		print("/.caesarCode.py {e|d} key 'text'")
+if arguments == 1:
+	play()
+	logging.info("Cipher started with no arguments, starting interactive mode.")
+elif arguments > 1 and arguments < 4 or arguments > 4:
+	if sys.argv[1] == "-h":
+		print("/.caesarCode.py {e|d} key(1-26) 'text'")
 	else:
-		print("######################################################################")
 		print("Invalid arguments detected, the script will now run in interactive mode.")
-		print("#######################################################################")
 		play()
 		logging.info("Started cipher in interactive mode.")
 else:
-	print("###############################################################")
-	print("Arguments detected, running the script in non-interactive mode.")	
-	print("###############################################################")
+	try:
+		key = int(sys.argv[2])
+		if key < 1 or key > 26:
+			raise CipherKeyValueError
+		mode = sys.argv[1]
+		if mode != 'e' and mode != 'd':
+			raise CipherModeError
 
-	mode = sys.argv[1]	
-	key = int(sys.argv[2])
-	message = sys.argv[3]
+	except (CipherModeError, ValueError, CipherKeyValueError):
+		print("Invalid Arguments. Try the '-h' option for argument guidelines.")
+		logging.info("Exiting Cipher - Invalid Mode or Key value.")
+
+	else:
+		print("Arguments detected, running the script in non-interactive mode.")	
+
+		message = sys.argv[3]
 	
-	logging.info("Started cipher in non-interactive mode.")
+		logging.info("Started cipher in non-interactive mode.")
 
-	print("Here is your new message:")
-	print(cryptMessage(mode, key, message))
+		print("Here is your new message:")
+		print(cryptMessage(mode, key, message))
